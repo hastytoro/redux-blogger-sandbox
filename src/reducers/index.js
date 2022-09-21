@@ -1,2 +1,7 @@
 import { combineReducers } from "redux";
-export default combineReducers({ tempKey: () => "tempFn" });
+
+const postReducer = () => {
+  return 123;
+};
+
+export default combineReducers({ posts: postReducer });
