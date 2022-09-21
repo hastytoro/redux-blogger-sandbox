@@ -4,11 +4,8 @@ import jsonPlaceholder from "../apis/jsonPlaceholder";
 How redux-thunk works under the hood:
 
 > Action creators - produce an object or function . . .
-
 > dispatch - that forwards the action.type and payload to all . . .
-
 > redux-thunk - determines if the object is an action or a function  . . .
-
 - - - - - -
 If just an action object, nothing additional is done different. It doesn't care
 to deal with it at all. The object gets passed along to all our reducers.
@@ -18,7 +15,6 @@ function, sending actions to all middleware, eventually forwarded to our reducer
 - - - - - -
 
 > reducers - that in turn create new state for our component . . .
-
 > store - thats the end of cycle . . .
 */
 
@@ -27,7 +23,7 @@ export const fetchPosts = () => {
     const response = await jsonPlaceholder.get("./posts");
     dispatch({
       type: "FETCH_POSTS",
-      payload: response,
+      payload: response.data,
     });
   };
 };
