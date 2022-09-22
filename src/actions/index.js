@@ -1,5 +1,5 @@
 import jsonPlaceholder from "../apis/jsonPlaceholder";
-
+import _ from "lodash";
 /*
 How redux-thunk works under the hood:
 > Action creators - produce an object or function . . .
@@ -11,9 +11,9 @@ to deal with it at all. The object that showed up gets passed along to all our r
 
 if we return a `function` instead an alternate flow is followed. The function is
 invoked and passed `dispatch` and `getState` as arguments. The `dispatch` from within
-our function, we can send action to all middleware(s), eventually forwarded to our reducers.
+our function, we can send `action` to all middleware(s), eventually forwarding it to our reducers.
 - - - - - -
-> reducers - that in turn creates new `state` for our component . . .
+> reducers - that in turn creates new `state` for our component in the. . .
 > store - thats the end of cycle . . .
 */
 
@@ -27,13 +27,12 @@ export const fetchPosts = () => {
   };
 };
 
-export const fetchUser = (id) => {
-  return async (dispatch, getState) => {
-    const response = await jsonPlaceholder.get(`/users/${id}`);
-    // console.log(response);
-    dispatch({
-      type: "FETCH_USER",
-      payload: response.data,
-    });
-  };
-};
+export const fetchUser = (id) => (dispatch) => _fetchUser(id, dispatch);
+
+const _fetchUser = _.memoize(async (id, dispatch) => {
+  const response = await jsonPlaceholder.get(`/users/${id}`);
+  dispatch({
+    type: "FETCH_USER",
+    payload: response.data,
+  });
+});
