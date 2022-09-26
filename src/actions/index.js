@@ -1,5 +1,6 @@
 import jsonPlaceholder from "../apis/jsonPlaceholder";
 import _ from "lodash";
+
 /*
 How redux-thunk works under the hood:
 > Action creators - produce an object or function . . .
@@ -17,6 +18,22 @@ our function, we can send `action` to all middleware(s), eventually forwarding i
 > store - thats the end of cycle . . .
 */
 
+// main action creator:
+export const fetchPostsAndUsers = () => {
+  console.log("About to call nested action creator.");
+  return async (dispatch, getState) => {
+    console.log("Processing 1st delegated call...");
+    await dispatch(fetchPosts());
+
+    console.log("Processing 2nd delegated call...");
+    _.chain(getState().posts)
+      .map("userId")
+      .uniq()
+      .forEach((id) => dispatch(fetchUser(id)))
+      .value();
+  };
+};
+
 export const fetchPosts = () => {
   return async (dispatch, getState) => {
     const response = await jsonPlaceholder.get("/posts");
@@ -27,12 +44,23 @@ export const fetchPosts = () => {
   };
 };
 
-export const fetchUser = (id) => (dispatch) => _fetchUser(id, dispatch);
+// // Below is the lodash memoized version:
+// export const fetchUser = (id) => (dispatch) => _fetchUser(id, dispatch);
 
-const _fetchUser = _.memoize(async (id, dispatch) => {
-  const response = await jsonPlaceholder.get(`/users/${id}`);
-  dispatch({
-    type: "FETCH_USER",
-    payload: response.data,
-  });
-});
+// const _fetchUser = _.memoize(async (id, dispatch) => {
+//   const response = await jsonPlaceholder.get(`/users/${id}`);
+//   dispatch({
+//     type: "FETCH_USER",
+//     payload: response.data,
+//   });
+// });
+
+export const fetchUser = (id) => {
+  return async (dispatch) => {
+    const response = await jsonPlaceholder.get(`/users/${id}`);
+    dispatch({
+      type: "FETCH_USER",
+      payload: response.data,
+    });
+  };
+};

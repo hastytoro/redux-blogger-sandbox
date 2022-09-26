@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { fetchUser } from "../actions";
+import { fetchPostsAndUsers } from "../actions";
 
 const UserHeader = (props) => {
-  console.log("props: ", props);
+  // console.log("props: ", props);
   useEffect(() => {
-    props.fetchUser(props.userId);
+    props.fetchPostsAndUsers(props.userId);
   }, []);
   const { user } = props;
   if (!user) return null;
@@ -17,4 +17,4 @@ const mapStateToProps = (state, ownProps) => {
   return { user: state.users.find((user) => user.id === ownProps.userId) };
 };
 
-export default connect(mapStateToProps, { fetchUser })(UserHeader);
+export default connect(mapStateToProps, { fetchPostsAndUsers })(UserHeader);
